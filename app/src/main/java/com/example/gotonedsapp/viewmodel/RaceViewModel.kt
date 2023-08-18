@@ -154,6 +154,7 @@ class RaceViewModel: ViewModel() {
                     }
 
                     override fun onFailure(call: Call<JsonObject?>, t: Throwable) {
+
                         // displaying an error message in toast
                         if (t != null) {
                             println("get response error:" + t.message)
