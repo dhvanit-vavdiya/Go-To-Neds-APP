@@ -14,6 +14,8 @@ import com.example.gotonedsapp.data.RaceSummaries
 import com.example.gotonedsapp.utils.Constants
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,20 +29,20 @@ class RaceViewModel: ViewModel() {
         get() = _raceData
         set(value) {}
 
-    private var _raceSummaries: MutableList<RaceSummaries> = ArrayList()
-    var raceSummaries: List<RaceSummaries> = ArrayList()
+    private val _raceSummaries = mutableStateListOf<RaceSummaries>()
+    val raceSummaries: List<RaceSummaries>
         get() = _raceSummaries
 
-    private var _greyhoundRaceSummaries: MutableList<RaceSummaries> = ArrayList()
-    var greyhoundRaceSummaries: List<RaceSummaries> = ArrayList()
+    private val _greyhoundRaceSummaries = mutableStateListOf<RaceSummaries>()
+    val greyhoundRaceSummaries: List<RaceSummaries>
         get() = _greyhoundRaceSummaries
 
-    private var _harnessRaceSummaries: MutableList<RaceSummaries> = ArrayList()
-    var harnessRaceSummaries: List<RaceSummaries> = ArrayList()
+    private val _harnessRaceSummaries = mutableStateListOf<RaceSummaries>()
+    val harnessRaceSummaries: List<RaceSummaries>
         get() = _harnessRaceSummaries
 
-    private var _horseRaceSummaries: MutableList<RaceSummaries> = ArrayList()
-    var horseRaceSummaries: List<RaceSummaries> = ArrayList()
+    private val _horseRaceSummaries = mutableStateListOf<RaceSummaries>()
+    val horseRaceSummaries: List<RaceSummaries>
         get() = _horseRaceSummaries
 
     fun getTodoList() {
@@ -132,14 +134,14 @@ class RaceViewModel: ViewModel() {
                                                     _horseRaceSummaries.add(race)
                                                 }
                                             }
-
+                                            //_raceSummaries1.add(race)
                                             _raceSummaries.add(race)
                                         }
                                     }
 
                                     println("get RaceData: $_raceSummaries")
 
-                                    raceSummaries = _raceSummaries
+                                    //raceSummaries = _raceSummaries
 
                                     val data = Data(nextToGoItem, raceSummaries)
                                     _raceData = mutableStateListOf((RaceData(data, message, status)).copy())
@@ -148,6 +150,7 @@ class RaceViewModel: ViewModel() {
                                 }
 
                             } catch (exception: Exception) {
+
                                 println("get exception:$exception")
                             }
                         }
