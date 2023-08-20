@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -34,8 +35,10 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +56,7 @@ import com.example.gotonedsapp.ui.theme.GoToNedsAppTheme
 import com.example.gotonedsapp.utils.Constants
 import com.example.gotonedsapp.viewmodel.RaceViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class MainActivity : ComponentActivity() {
@@ -76,18 +80,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TodoView(viewModel: RaceViewModel) {
 
-    var refreshData by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit, block = {
 
         viewModel.getTodoList()
-
-        if (refreshData) {
-            // Call the function to refresh your data
-            // For example: fetchData()
-            //getTodoList()
-            refreshData = false // Reset the flag after data is refreshed
-        }
     })
 
     // Declaring a boolean value to store
@@ -98,7 +95,7 @@ fun TodoView(viewModel: RaceViewModel) {
     val mCategories = listOf("ALL", "Greyhound", "Harness", "Horse")
 
     // Create a string value to store the selected category
-    var mSelectedText by remember { mutableStateOf(mCategories.get(0)) }
+    var mSelectedText by remember { mutableStateOf(mCategories[0]) }
 
     var mTextFieldSize by remember { mutableStateOf(Size.Zero)}
 
@@ -109,6 +106,8 @@ fun TodoView(viewModel: RaceViewModel) {
         Icons.Filled.KeyboardArrowDown
 
     var raceData: List<RaceSummaries> = viewModel.raceSummaries
+    //var raceData = mutableListOf<RaceSummaries>()
+    //raceData = viewModel.raceSummaries as MutableList<RaceSummaries>
 
     Scaffold(
         topBar = {
@@ -171,33 +170,42 @@ fun TodoView(viewModel: RaceViewModel) {
                         ) {
                             mCategories.forEach { label -> DropdownMenuItem(onClick = {
 
-                                raceData = emptyList()
-                                raceData = when (label) {
-
-                                    Constants.greyHound -> {
-                                        println("get race sort:: 1 1")
-                                        viewModel.setSortByCategory(label)
-                                    }
-                                    Constants.harness -> {
-                                        println("get race sort:: 1 2")
-                                        viewModel.setSortByCategory(label)
-                                    }
-                                    Constants.horse -> {
-                                        println("get race sort:: 1 3")
-                                        viewModel.setSortByCategory(label)
-                                    }
-                                    else -> {
-                                        println("get race sort:: 1 44")
-                                        viewModel.setSortByCategory(label)
-                                    }
-                                }
-
                                 println("get race sort data" + raceData)
 
                                 mSelectedText = label
 
+                                coroutineScope.launch {
+                                    // Perform any asynchronous actions if needed
+                                    // For example, navigate to another screen
+                                    raceData = emptyList()
+                                    println("get race sort data " + raceData)
+                                    raceData = when (label) {
+
+                                        Constants.greyHound -> {
+                                            println("get race sort:: 1 1")
+                                            println("get race :" + viewModel.setSortByCategory(label).size)
+                                            viewModel.setSortByCategory(label)
+                                        }
+                                        Constants.harness -> {
+                                            println("get race sort:: 1 2")
+                                            println("get race :" + viewModel.setSortByCategory(label).size)
+                                            viewModel.setSortByCategory(label)
+                                        }
+                                        Constants.horse -> {
+                                            println("get race sort:: 1 3")
+                                            println("get race :" + viewModel.setSortByCategory(label).size)
+                                            viewModel.setSortByCategory(label)
+                                        }
+                                        else -> {
+                                            println("get race sort:: 1 44")
+                                            println("get race :" + viewModel.setSortByCategory(label).size)
+                                            viewModel.setSortByCategory(label)
+                                        }
+                                    }
+                                    println("get race sort data " + raceData)
+                                }
+
                                 mExpanded = false
-                                refreshData = true
 
                                 }) {
                                     Text(text = label)
@@ -208,7 +216,7 @@ fun TodoView(viewModel: RaceViewModel) {
 
                     LazyColumn(modifier = Modifier.fillMaxHeight()) {
 
-                        itemsIndexed(raceData) { _position, todo ->
+                        items(raceData) { todo ->
 
                             Card(
                                 shape = RoundedCornerShape(4.dp),

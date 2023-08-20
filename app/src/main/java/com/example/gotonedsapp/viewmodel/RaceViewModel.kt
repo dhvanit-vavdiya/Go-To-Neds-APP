@@ -134,7 +134,6 @@ class RaceViewModel: ViewModel() {
                                                     _horseRaceSummaries.add(race)
                                                 }
                                             }
-                                            //_raceSummaries1.add(race)
                                             _raceSummaries.add(race)
                                         }
                                     }
